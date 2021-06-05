@@ -10,6 +10,7 @@ namespace core;
 class Core
 {
     private static $instance;
+    private static $mainTemplate;
     private function __construct()
     {
 
@@ -34,6 +35,7 @@ class Core
     {
         session_start();
         spl_autoload_register('\core\Core::__autoload');
+        self::$mainTemplate = new Template();
     }
     /**
      * Виконує основний процес роботи CMS-системи
@@ -54,14 +56,32 @@ class Core
             $fullMethodName = 'action'.$methodName;
         if(class_exists($fullClassName)) {
             $controller = new $fullClassName();
-            if (method_exists($controller, $fullMethodName))
-                $controller->$fullMethodName();
+            if (method_exists($controller, $fullMethodName)){
+                $method = new \ReflectionMethod($fullClassName, $fullMethodName);
+                $paramsArray = [];
+                foreach($method->getParameters() as $parameter)
+                {
+                    array_push($paramsArray, isset($_GET[$parameter->name]) ? $_GET[$parameter->name] : null);
+                }
+                $result = $method->invokeArgs($controller, $paramsArray);
+                if(is_array($result))
+                {
+                    self::$mainTemplate->setParams($result);
+                }
+            }
             else
                 throw new \Exception('404 Not Found');
         }
         else
             throw new \Exception('404 Not Found');
         //echo "Class : {$className}, method : {$fullMethodName}";
+    }
+    /**
+     * Завершення роботи системи та виведення результату
+     */
+    public function done()
+    {
+        self::$mainTemplate->display('views/layout/index.php');
     }
     /**
      * Автозавантажувач класів

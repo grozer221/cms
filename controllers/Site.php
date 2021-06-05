@@ -8,6 +8,10 @@ class Site
 {
     public function actionIndex()
     {
-        echo'Site::actionIndex';
+        return $result=[
+            'Title' => 'Заголовок',
+            'Content' => 'Контент'
+        ];
+        return $result;
     }
 }
