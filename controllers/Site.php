@@ -4,14 +4,15 @@
 namespace controllers;
 
 
-class Site
+use core\Controller;
+
+class Site extends Controller
 {
     public function actionIndex()
     {
-        return $result=[
-            'Title' => 'Заголовок',
-            'Content' => 'Контент'
-        ];
-        return $result;
+        return $this->render('index', null, [
+            'MainTitle' => 'Головна сторінка',
+            'PageTitle' => 'Головна сторінка'
+        ]);
     }
 }

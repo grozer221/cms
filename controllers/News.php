@@ -16,7 +16,10 @@ class News extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index', ['count' => 10], ['Title' => 'Новини']);
+        return $this->render('index', ['count' => 10], [
+            'PageTitle' => 'Новини',
+            'MainTitle' => 'Новини'
+        ]);
     }
 
     /**

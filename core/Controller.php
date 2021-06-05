@@ -3,7 +3,6 @@
 
 namespace core;
 
-use function MongoDB\BSON\toPHP;
 
 /**
  * Базовий клас для всіх контролерів
@@ -19,7 +18,7 @@ class Controller
         if(!is_array($globalParams))
             $globalParams = [];
         $moduleName = strtolower((new \ReflectionClass($this))->getShortName());
-        $globalParams['Content'] = $tpl->render("views/{$moduleName}/{$viewName}.php");
+        $globalParams['PageContent'] = $tpl->render("views/{$moduleName}/{$viewName}.php");
         return $globalParams;
     }
 
