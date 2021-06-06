@@ -42,7 +42,6 @@ class DB
                 $sql .= " LIMIT {$limit}";
         }
         $sth = $this->pdo->prepare($sql);
-        echo $sql;
         if(is_array($where) && count($where) > 0)
             $sth->execute(array_values($where));
         else

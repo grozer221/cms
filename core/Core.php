@@ -11,9 +11,24 @@ class Core
 {
     private static $instance;
     private static $mainTemplate;
+    private static $db;
     private function __construct()
     {
-
+        global $Config;
+        spl_autoload_register('\core\Core::__autoload');
+        self::$db = new \core\DB(
+            $Config['Database']['Server'],
+            $Config['Database']['Username'],
+            $Config['Database']['Password'],
+            $Config['Database']['Database']
+        );
+    }
+    /**
+     * Отримати обєкт-зєднання з базою даних
+     */
+    public function getDB()
+    {
+        return self::$db;
     }
     /**
      * Повертає екземпляр ядра системи
@@ -34,7 +49,6 @@ class Core
     public function init()
     {
         session_start();
-        spl_autoload_register('\core\Core::__autoload');
         self::$mainTemplate = new Template();
     }
     /**
@@ -74,7 +88,6 @@ class Core
         }
         else
             throw new \Exception('404 Not Found');
-        //echo "Class : {$className}, method : {$fullMethodName}";
     }
     /**
      * Завершення роботи системи та виведення результату

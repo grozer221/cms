@@ -35,15 +35,18 @@
                         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                     </li>
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <a class="btn btn-outline-primary" type="submit" href="/users/register">Увійти</a>
+                <a class="btn btn-outline-success" type="submit" href="/users/register">Реєстрація</a>
             </div>
         </div>
     </nav>
     <div class="container">
         <h1 class="mt-5"><?=$PageTitle ?></h1>
+        <? if(!empty($MessageText)) : ?>
+            <div class="alert alert-<?=$MessageClass?>" role="alert">
+                <?=$MessageText?>
+            </div>
+        <? endif; ?>
         <?=$PageContent ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
