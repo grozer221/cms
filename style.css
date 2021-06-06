@@ -1,0 +1,7 @@
+.news-record{
+    overflow: hidden;
+}
+
+.news-record .photo svg{
+    padding: 10px;
+}

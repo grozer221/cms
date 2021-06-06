@@ -1,9 +1,14 @@
+<?php
+$userModel = new \models\Users();
+$user = $userModel->getCurrentUser()
+?>
 <!doctype html>
 <html lang="ua">
 <head>
     <meta charset="UTF-8">
     <title><?=$MainTitle ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -20,23 +25,26 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/news">News</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                <? if(!$userModel->isUserAuthenticated()) :?>
+                    <a class="btn btn-outline-primary" type="submit" href="/users/login">Увійти</a>
+                    <a class="btn btn-outline-success" type="submit" href="/users/register">Реєстрація</a>
+                <? else : ?>
+                    <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
+                            <?= $user['login'] ?>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#">Action</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><a class="dropdown-item" href="/users/logout">Вийти</a></li>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-                <a class="btn btn-outline-primary" type="submit" href="/users/register">Увійти</a>
-                <a class="btn btn-outline-success" type="submit" href="/users/register">Реєстрація</a>
+                    </div>
+                <? endif; ?>
             </div>
         </div>
     </nav>
