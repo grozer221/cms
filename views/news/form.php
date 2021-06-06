@@ -1,4 +1,4 @@
-<form method="post" action="">
+<form method="post" action="" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="title" class="form-label">Заголовок новини</label>
         <input type="text" name="title" value="<?=$model['title'] ?>" class="form-control" id="title">
@@ -11,5 +11,14 @@
         <label for="text" class="form-label">Повний текст новини</label>
         <textarea name="text" class="form-control editor" id="text"><?=$model['text'] ?></textarea>
     </div>
+    <div class="mb-3">
+        <label for="text" class="form-label">Фотографія до новини</label>
+        <input type="file" name="file" accept="image/png, image/jpeg, image/gif" id="file" class="form-control">
+    </div>
+    <? if(is_file('files/news/'.$model['photo'])) : ?>
+        <div class="mb-3">
+            <img src="/files/news/<?= $model['photo'] ?>">
+        </div>
+    <? endif; ?>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

@@ -4,5 +4,8 @@ include ('core/Core.php');
 
 $core = \core\Core::getInstance();
 $core->init();
-$core->run();
+try{ $core->run();}
+catch (Exception $e){
+    header('Location: /notfound/');
+}
 $core->done();

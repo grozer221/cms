@@ -17,31 +17,23 @@ class Users extends Controller
     {
         $title = 'Вихід із аккаунту';
         unset($_SESSION['user']);
-        return $this->renderMessage('success', 'Ви вийшли з вашого аккаунту', null,
-            [
-                'PageTitle' => $title,
-                'MainTitle' => $title
-            ]);
+        header('Location: /');
     }
     public function actionLogin()
     {
         $title = 'Вхід на сайт';
-        if(isset($_SESSION['user'] ))
-            return $this->renderMessage('success', 'Ви уже увійшли на сайт', null,
-                [
-                    'PageTitle' => $title,
-                    'MainTitle' => $title
-                ]);
+        if(isset($_SESSION['user'] )){
+            header('Location: /');
+            return;
+        }
+
         if($this->isPost())
         {
             $user = $this->usersModel->authUser($_POST['login'], $_POST['password']);
             if(!empty($user)){
                 $_SESSION['user'] = $user;
-                return $this->renderMessage('success', 'Ви успішно увійшли на сайт', null,
-                    [
-                        'PageTitle' => $title,
-                        'MainTitle' => $title
-                    ]);
+                header('Location: /');
+                return;
             }
             else{
                 return $this->render('login', null, [

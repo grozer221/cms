@@ -10,7 +10,8 @@ class Utils
     {
         $newRow = [];
         foreach ($fields as $field)
-            $newRow[$field] = $row[$field];
-            return $newRow;
+            if(isset($row[$field]))
+                $newRow[$field] = $row[$field];
+        return $newRow;
     }
 }

@@ -9,22 +9,42 @@ use core\Utils;
 
 class News extends \core\Model
 {
+    public function ChangePhoto($id, $file)
+    {
+        $folder = 'files/news/';
+        $news = $this->getNewsById($id);
+        if(is_file($folder.$news['photo']) && is_file($folder.$file))
+            unlink($folder.$news['photo']);
+        $news['photo'] = $file;
+        $this->updateNews($news, $id);
+    }
     public function addNews($row)
     {
         $userModel = new Users();
         $user = $userModel->getCurrentUser();
-        if($user === null)
-            return false;
+        if($user === null){
+            return [
+                'error' => true,
+                'messages' => ['Користувач не аутентифікований']
+            ];
+        }
         $validateResult = $this->Validate($row);
-        if(is_array($validateResult))
-            return $validateResult;
+        if(is_array($validateResult)){
+            return [
+                'error' => true,
+                'messages' => $validateResult
+            ];
+        }
         $fields = ['title', 'short_text', 'text'];
         $rowFiltered = Utils::arrayFilter($row, $fields);
         $rowFiltered['datetime'] = date('Y-m-d H:i:s');
         $rowFiltered['user_id'] = $user['id'];
         $rowFiltered['photo'] = 'photo';
-        \core\Core::getInstance()->getDB()->insert('news', $rowFiltered);
-        return true;
+        $id = \core\Core::getInstance()->getDB()->insert('news', $rowFiltered);
+        return [
+            'error' => false,
+            'id' => $id
+        ];
     }
     public function getLastNews($count)
     {
@@ -46,7 +66,7 @@ class News extends \core\Model
         $validateResult = $this->Validate($row);
         if(is_array($validateResult))
             return $validateResult;
-        $fields = ['title', 'short_text', 'text'];
+        $fields = ['title', 'short_text', 'text', 'photo'];
         $rowFiltered = Utils::arrayFilter($row, $fields);
         $rowFiltered['datetime_lastedit'] = date('Y-m-d H:i:s');
         //$rowFiltered['user_id'] = $user['id'];

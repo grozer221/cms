@@ -58,6 +58,7 @@ class DB
         $sql = "INSERT INTO {$table} ({$fieldsStr}) VALUE ({$valuesStr})";
         $sth = $this->pdo->prepare($sql);
         $sth->execute(array_values($row));
+        return $this->pdo->lastInsertId();
     }
     public function delete($table, $where)
     {

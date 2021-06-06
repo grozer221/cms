@@ -20,14 +20,13 @@ $user = $userModel->getCurrentUser()
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a class="nav-link" href="/news">Новини</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/news">News</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
+                    <? if($userModel->isUserAuthenticated()) :?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/news/add">Додати новину</a>
+                        </li>
+                    <? endif; ?>
                 </ul>
                 <? if(!$userModel->isUserAuthenticated()) :?>
                     <a class="btn btn-outline-primary" type="submit" href="/users/login">Увійти</a>

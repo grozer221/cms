@@ -59,16 +59,38 @@ class News extends Controller
             ]);
         $title = 'Додавання новини';
         if($this->isPost()){
+
             $result = $this->newsModel->addNews($_POST);
-            if($result === true)
+            if($result['error'] === false)
+            {
+                $allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
+                if(is_file($_FILES['file']['tmp_name']) && in_array($_FILES['file']['type'], $allowedTypes))
+                {
+                    switch($_FILES['file']['type'])
+                    {
+                        case 'image/jpeg':
+                            $extension = 'jpeg';
+                            break;
+                        case 'image/gif':
+                            $extension = 'gif';
+                            break;
+                        default:
+                            $extension = 'png';
+                    }
+                    $name = $result['id'].'_'.uniqid().'.'.$extension;
+                    move_uploaded_file($_FILES['file']['tmp_name'], 'files/news/'.$name);
+                    $this->newsModel->ChangePhoto($result['id'], $name);
+                }
+
                 return $this->renderMessage('success', 'Новина успішно додана', null,
                     [
                         'PageTitle' => $title,
                         'MainTitle' => $title
                     ]);
+            }
             else
             {
-                $message = implode('<br/>', $result);
+                $message = implode('<br/>', $result['messages']);
                 return $this->render('form', ['model' => $_POST], [
                     'PageTitle' => $title,
                     'MainTitle' => $title,
@@ -99,12 +121,30 @@ class News extends Controller
         $title = 'Редагування новини';
         if($this->isPost()){
             $result = $this->newsModel->updateNews($_POST, $id);
-            if($result === true)
+            if($result === true){
+                $allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
+                if(is_file($_FILES['file']['tmp_name']) && in_array($_FILES['file']['type'], $allowedTypes)) {
+                    switch ($_FILES['file']['type']) {
+                        case 'image/jpeg':
+                            $extension = 'jpeg';
+                            break;
+                        case 'image/gif':
+                            $extension = 'gif';
+                            break;
+                        default:
+                            $extension = 'png';
+                    }
+                    $name = $id . '_' . uniqid() . '.' . $extension;
+                    move_uploaded_file($_FILES['file']['tmp_name'], 'files/news/' . $name);
+                    $this->newsModel->ChangePhoto($id, $name);
+                }
                 return $this->renderMessage('success', 'Новину успішно збережено', null,
                     [
                         'PageTitle' => $title,
                         'MainTitle' => $title
                     ]);
+            }
+
             else
             {
                 $message = implode('<br/>', $result);
@@ -127,8 +167,15 @@ class News extends Controller
      */
     public function actionDelete()
     {
-        $title = 'Видалення новини';
         $id = $_GET['id'];
+        $news = $this->newsModel->getNewsById($id);
+        $titleForbidden = 'Доступ заборонено';
+        if(empty($this->user) || $news['user_id'] != $this->usersModel->getCurrentUser()['id'])
+            return $this->render('forbidden', null, [
+                'PageTitle' => $titleForbidden,
+                'MainTitle' => $titleForbidden
+            ]);
+        $title = 'Видалення новини';
         if(isset($_GET['confirm']) && $_GET['confirm'] == 'yes')
         {
             if($this->newsModel->deleteNews($id))
@@ -140,7 +187,6 @@ class News extends Controller
                         'MainTitle' => $title
                     ]);
         }
-        $news = $this->newsModel->getNewsById($id);
         return $this->render('delete', ['model' => $news], [
             'PageTitle' => $title,
             'MainTitle' => $title
