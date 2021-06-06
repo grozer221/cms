@@ -1,3 +1,6 @@
+<?php
+    $filePath = pathinfo($model['photo']);
+?>
 <form method="post" action="" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="title" class="form-label">Заголовок новини</label>
@@ -15,9 +18,9 @@
         <label for="text" class="form-label">Фотографія до новини</label>
         <input type="file" name="file" accept="image/png, image/jpeg, image/gif" id="file" class="form-control">
     </div>
-    <? if(is_file('files/news/'.$model['photo'])) : ?>
+    <? if(is_file('files/news/'.$filePath['filename'].'_b.'.$filePath['extension'])) : ?>
         <div class="mb-3">
-            <img src="/files/news/<?= $model['photo'] ?>">
+            <img src="/files/news/<?= $filePath['filename'].'_b.'.$filePath['extension'] ?>">
         </div>
     <? endif; ?>
     <button type="submit" class="btn btn-primary">Submit</button>
