@@ -58,5 +58,73 @@ $user = $userModel->getCurrentUser()
         <?=$PageContent ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <? if($userModel->isUserAuthenticated()) : ?>
+        <script src="/alien/build/ckeditor.js"></script>
+        <script>
+            let editors = document.querySelectorAll('.editor');
+            for(let i in editors) {
+                ClassicEditor
+                    .create(editors[i], {
+
+                        toolbar: {
+                            items: [
+                                'heading',
+                                '|',
+                                'bold',
+                                'italic',
+                                'link',
+                                'bulletedList',
+                                'numberedList',
+                                '|',
+                                'outdent',
+                                'indent',
+                                '|',
+                                'imageUpload',
+                                'blockQuote',
+                                'insertTable',
+                                'mediaEmbed',
+                                'undo',
+                                'redo',
+                                'alignment',
+                                'fontColor',
+                                'fontSize',
+                                'fontFamily',
+                                'horizontalLine',
+                                'imageInsert'
+                            ]
+                        },
+                        language: 'uk',
+                        image: {
+                            toolbar: [
+                                'imageTextAlternative',
+                                'imageStyle:full',
+                                'imageStyle:side'
+                            ]
+                        },
+                        table: {
+                            contentToolbar: [
+                                'tableColumn',
+                                'tableRow',
+                                'mergeTableCells'
+                            ]
+                        },
+                        licenseKey: '',
+
+
+                    })
+                    .then(editor => {
+                        window.editor = editor;
+
+
+                    })
+                    .catch(error => {
+                        console.error('Oops, something went wrong!');
+                        console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+                        console.warn('Build id: jt24hc9kan1y-pxirrcz3cj5d');
+                        console.error(error);
+                    });
+            }
+        </script>
+    <? endif; ?>
 </body>
 </html>

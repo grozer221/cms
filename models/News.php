@@ -4,6 +4,7 @@
 namespace models;
 
 
+use core\Core;
 use core\Utils;
 
 class News extends \core\Model
@@ -28,6 +29,42 @@ class News extends \core\Model
     public function getLastNews($count)
     {
         return \core\Core::getInstance()->getDB()->select('news', '*', null, ['datetime' => 'DESC'], $count);
+    }
+    public function getNewsById($id){
+        $news = \core\Core::getInstance()->getDB()->select('news', '*', ['id' => $id]);
+        if(!empty($news))
+            return $news[0];
+        else
+            return null;
+    }
+    public function updateNews($row, $id)
+    {
+        $userModel = new Users();
+        $user = $userModel->getCurrentUser();
+        if($user === null)
+            return false;
+        $validateResult = $this->Validate($row);
+        if(is_array($validateResult))
+            return $validateResult;
+        $fields = ['title', 'short_text', 'text'];
+        $rowFiltered = Utils::arrayFilter($row, $fields);
+        $rowFiltered['datetime_lastedit'] = date('Y-m-d H:i:s');
+        //$rowFiltered['user_id'] = $user['id'];
+        //$rowFiltered['photo'] = 'photo';
+        Core::getInstance()->getDB()->update('news', $rowFiltered, ['id' => $id]);
+        return true;
+    }
+    public function deleteNews($id)
+    {
+        $news = $this->getNewsById($id);
+        $userModel = new Users();
+        $user = $userModel->getCurrentUser();
+        if($user === null)
+            return false;
+        if(empty($news) || empty($user) || $user['id'] != $news['user_id'])
+            return false;
+        Core::getInstance()->getDB()->delete('news', ['id' => $id]);
+        return true;
     }
     public function Validate($row)
     {

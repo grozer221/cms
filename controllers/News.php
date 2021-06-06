@@ -38,9 +38,12 @@ class News extends Controller
      */
     public function actionView()
     {
-        return $this->render('index', ['count' => 10], [
-            'PageTitle' => 'Новини',
-            'MainTitle' => 'Новини'
+        $id = $_GET['id'];
+        $news = $this->newsModel->getNewsById($id);
+        $title = $news['title'];
+        return $this->render('view', ['model' => $news], [
+            'PageTitle' => $title,
+            'MainTitle' => $title
         ]);
     }
     /**
@@ -66,7 +69,7 @@ class News extends Controller
             else
             {
                 $message = implode('<br/>', $result);
-                return $this->render('add', null, [
+                return $this->render('form', ['model' => $_POST], [
                     'PageTitle' => $title,
                     'MainTitle' => $title,
                     'MessageText' => $message,
@@ -75,7 +78,7 @@ class News extends Controller
             }
         }
         else
-            return $this->render('add', null, [
+            return $this->render('form', null, [
                 'PageTitle' => $title,
                 'MainTitle' => $title
             ]);
@@ -85,19 +88,62 @@ class News extends Controller
      */
     public function actionEdit()
     {
-        return $this->render('index', ['count' => 10], [
-            'PageTitle' => 'Новини',
-            'MainTitle' => 'Новини'
-        ]);
+        $id = $_GET['id'];
+        $news = $this->newsModel->getNewsById($id);
+        $titleForbidden = 'Доступ заборонено';
+        if(empty($this->user) || $news['user_id'] != $this->usersModel->getCurrentUser()['id'])
+            return $this->render('forbidden', null, [
+                'PageTitle' => $titleForbidden,
+                'MainTitle' => $titleForbidden
+            ]);
+        $title = 'Редагування новини';
+        if($this->isPost()){
+            $result = $this->newsModel->updateNews($_POST, $id);
+            if($result === true)
+                return $this->renderMessage('success', 'Новину успішно збережено', null,
+                    [
+                        'PageTitle' => $title,
+                        'MainTitle' => $title
+                    ]);
+            else
+            {
+                $message = implode('<br/>', $result);
+                return $this->render('form', ['model' => $news], [
+                    'PageTitle' => $title,
+                    'MainTitle' => $title,
+                    'MessageText' => $message,
+                    'MessageClass' => 'danger'
+                ]);
+            }
+        }
+        else
+            return $this->render('form', ['model' => $news], [
+                'PageTitle' => $title,
+                'MainTitle' => $title
+            ]);
     }
     /**
      * Видалення новини
      */
     public function actionDelete()
     {
-        return $this->render('index', ['count' => 10], [
-            'PageTitle' => 'Новини',
-            'MainTitle' => 'Новини'
+        $title = 'Видалення новини';
+        $id = $_GET['id'];
+        if(isset($_GET['confirm']) && $_GET['confirm'] == 'yes')
+        {
+            if($this->newsModel->deleteNews($id))
+                header('Location: /news/');
+            else
+                return $this->renderMessage('error', 'Помилка видалення новини', null,
+                    [
+                        'PageTitle' => $title,
+                        'MainTitle' => $title
+                    ]);
+        }
+        $news = $this->newsModel->getNewsById($id);
+        return $this->render('delete', ['model' => $news], [
+            'PageTitle' => $title,
+            'MainTitle' => $title
         ]);
     }
 }
