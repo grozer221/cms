@@ -92,8 +92,6 @@ class News extends \core\Model
         $fields = ['title', 'short_text', 'text', 'photo'];
         $rowFiltered = Utils::arrayFilter($row, $fields);
         $rowFiltered['datetime_lastedit'] = date('Y-m-d H:i:s');
-        //$rowFiltered['user_id'] = $user['id'];
-        //$rowFiltered['photo'] = 'photo';
         Core::getInstance()->getDB()->update('news', $rowFiltered, ['id' => $id]);
         return true;
     }

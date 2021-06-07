@@ -61,4 +61,10 @@ class Controller
         $globalParams['PageContent'] = $tpl->render("views/layout/message.php");
         return $globalParams;
     }
+    public function renderForbidden()
+    {
+        $tpl = new Template();
+        $globalParams['PageContent'] = $tpl->render("views/layout/forbidden.php");
+        return $globalParams;
+    }
 }

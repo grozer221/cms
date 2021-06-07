@@ -11,11 +11,9 @@ class Users extends \core\Model
         $errors = [];
         if(empty($formRow['login']))
             $errors []= 'Поле "Логін" не може бути порожнім';
-
         $user = $this->getUserByLogin($formRow['login']);
         if(!empty($user))
             $errors []= 'Користувач із заданим логіном уже зареєстрований';
-
         if(empty($formRow['password']))
             $errors []= 'Поле "Пароль" не може бути порожнім';
         if($formRow['password'] !==$formRow['password2'])
@@ -34,9 +32,13 @@ class Users extends \core\Model
         $validateResult = $this->Validate($userRow);
         if(is_array($validateResult))
             return $validateResult;
-        $fields = ['login', 'password', 'firstname', 'lastname'];
+        if($this->isUserAuthenticated() && $this->isUserAccessIsAdmin())
+            $fields = ['login', 'password', 'firstname', 'lastname', 'access'];
+        else
+            $fields = ['login', 'password', 'firstname', 'lastname'];
         $userRowFiltered = Utils::arrayFilter($userRow, $fields);
         $userRowFiltered['password'] = md5($userRowFiltered['password']);
+        $userRowFiltered['date_register'] = date('Y-m-d H:i:s');;
         \core\Core::getInstance()->getDB()->insert('users', $userRowFiltered);
         return true;
     }
@@ -96,5 +98,50 @@ class Users extends \core\Model
             return true;
         else
             return false;
+    }
+    public function getLastUsers($count)
+    {
+        return \core\Core::getInstance()->getDB()->select('users', '*', null, ['date_register' => 'DESC'], $count);
+    }
+    public function getUserById($id){
+        $user = \core\Core::getInstance()->getDB()->select('users', '*', ['id' => $id]);
+        if(!empty($user))
+            return $user[0];
+        else
+            return null;
+    }
+    public function updateUser($row, $id)
+    {
+        $userModel = new \models\Users();
+        $user = $userModel->getUserById($id);
+        if($user === null)
+            return false;
+        $validateResult = $this->validateForUpdate($row);
+        if(is_array($validateResult))
+            return $validateResult;
+        if(empty($row['password']))
+            $fields = ['login', 'firstname', 'lastname', 'access'];
+        else
+            $fields = ['login', 'password', 'firstname', 'lastname', 'access'];
+        $rowFiltered = Utils::arrayFilter($row, $fields);
+        $rowFiltered['date_edit_user'] = date('Y-m-d H:i:s');
+        Core::getInstance()->getDB()->update('users', $rowFiltered, ['id' => $id]);
+        return true;
+    }
+    public function validateForUpdate($formRow)
+    {
+        $errors = [];
+        if(empty($formRow['login']))
+            $errors []= 'Поле "Логін" не може бути порожнім';
+        if($formRow['password'] !==$formRow['password2'])
+            $errors []= 'Паролі не співпадають';
+        if(empty($formRow['firstname']))
+            $errors []= 'Поле "Ім\'я" не може бути порожнім';
+        if(empty($formRow['lastname']))
+            $errors []= 'Поле "Прізвище" не може бути порожнім';
+        if(count($errors) > 0)
+            return $errors;
+        else
+            return true;
     }
 }

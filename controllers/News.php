@@ -52,12 +52,8 @@ class News extends Controller
      */
     public function actionAdd()
     {
-        $titleForbidden = 'Доступ заборонено';
         if(empty($this->user) || $this->usersModel->isUserAccessIsUser())
-            return $this->render('forbidden', null, [
-                'PageTitle' => $titleForbidden,
-                'MainTitle' => $titleForbidden
-            ]);
+            return $this->renderForbidden();
         $title = 'Додавання новини';
         if($this->isPost()){
             $result = $this->newsModel->addNews($_POST);
@@ -110,16 +106,13 @@ class News extends Controller
      */
     public function actionEdit()
     {
+        if(empty($_GET['id']))
+            return $this->renderForbidden();
         $id = $_GET['id'];
         $news = $this->newsModel->getNewsById($id);
-        $titleForbidden = 'Доступ заборонено';
-        if(!$this->usersModel->isUserAccessIsAdmin()){
+        if(!$this->usersModel->isUserAccessIsAdmin())
             if(empty($this->user) || $news['user_id'] != $this->user['id'] || $this->usersModel->isUserAccessIsUser())
-                return $this->render('forbidden', null, [
-                    'PageTitle' => $titleForbidden,
-                    'MainTitle' => $titleForbidden
-                ]);
-        }
+                return $this->renderForbidden();
         $title = 'Редагування новини';
         if($this->isPost()){
             $result = $this->newsModel->updateNews($_POST, $id);
@@ -169,16 +162,13 @@ class News extends Controller
      */
     public function actionDelete()
     {
+        if(empty($_GET['id']))
+            return $this->renderForbidden();
         $id = $_GET['id'];
         $news = $this->newsModel->getNewsById($id);
-        $titleForbidden = 'Доступ заборонено';
-        if(!$this->usersModel->isUserAccessIsAdmin()){
+        if(!$this->usersModel->isUserAccessIsAdmin())
             if(empty($this->user) || $news['user_id'] != $this->user['id'] || $this->usersModel->isUserAccessIsUser())
-                return $this->render('forbidden', null, [
-                    'PageTitle' => $titleForbidden,
-                    'MainTitle' => $titleForbidden
-                ]);
-        }
+                return $this->renderForbidden();
         $title = 'Видалення новини';
         if(isset($_GET['confirm']) && $_GET['confirm'] == 'yes')
         {

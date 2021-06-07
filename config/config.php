@@ -6,5 +6,6 @@ $Config = [
         'Password' => 'root',
         'Database' => 'cms'
     ],
-    'NewsCount' => 10
+    'NewsCount' => 10,
+    'UsersCount' => 10
 ];
