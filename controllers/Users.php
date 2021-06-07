@@ -44,13 +44,12 @@ class Users extends Controller
                 ]);
             }
         }
-        else{
-            $params = [
+        else
+            return $this->render('login', null,
+                [
                 'PageTitle' => $title,
                 'MainTitle' => $title
-            ];
-            return $this->render('login', null, $params);
-        }
+            ]);
     }
     public function actionRegister()
     {

@@ -19,12 +19,22 @@ $user = $userModel->getCurrentUser()
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/news">Новини</a>
-                    </li>
-                    <? if($userModel->isUserAuthenticated()) :?>
+
+                    <? if($userModel->isUserAuthenticated() && !$userModel->isUserAccessIsUser()) :?>
+                        <li>
+                            <div class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Новини
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="/news/">Новини</a></li>
+                                    <li><a class="dropdown-item" href="/news/add">Додати новину</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    <? else: ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="/news/add">Додати новину</a>
+                            <a class="nav-link" href="/news">Новини</a>
                         </li>
                     <? endif; ?>
                 </ul>
@@ -36,7 +46,7 @@ $user = $userModel->getCurrentUser()
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <?= $user['login'] ?>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu translate-left50" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#">Action</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -57,7 +67,7 @@ $user = $userModel->getCurrentUser()
         <?=$PageContent ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-    <? if($userModel->isUserAuthenticated()) : ?>
+    <? if($userModel->isUserAuthenticated() && !($user['access'] === 'user')) : ?>
         <script src="/alien/build/ckeditor.js"></script>
         <script>
             let editors = document.querySelectorAll('.editor');

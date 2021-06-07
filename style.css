@@ -9,3 +9,12 @@
 .news .bd-placeholder-img{
     padding: 10px 10px 10px 0;
 }
+
+.translate-left50{
+    transform: translateX(-50%);
+}
+@media (max-width: 992px) {
+    .translate-left50{
+        transform: none;
+    }
+}

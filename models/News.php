@@ -1,8 +1,6 @@
 <?php
 
-
 namespace models;
-
 
 use core\Core;
 use core\Utils;
@@ -10,36 +8,37 @@ use Imagick;
 
 class News extends \core\Model
 {
-    public function ChangePhoto($id, $file)
+    protected static $folder = 'files/news/';
+    public function ChangePhoto($id, $fileInput)
     {
-        $folder = 'files/news/';
-        $pathInfoFile = pathinfo($folder.$file);
-        $file_big = $pathInfoFile['filename'].'_b.'.$pathInfoFile['extension'];
-        $file_middle = $pathInfoFile['filename'].'_m.'.$pathInfoFile['extension'];
-        $file_small = $pathInfoFile['filename'].'_s.'.$pathInfoFile['extension'];
+        self::$folder = 'files/news/';
+        $pathInfoFileInput = pathinfo(self::$folder.$fileInput);
+        $file_big = $pathInfoFileInput['filename'].'_b.'.$pathInfoFileInput['extension'];
+        $file_middle = $pathInfoFileInput['filename'].'_m.'.$pathInfoFileInput['extension'];
+        $file_small = $pathInfoFileInput['filename'].'_s.'.$pathInfoFileInput['extension'];
         $news = $this->getNewsById($id);
-        $pathInfoNews = pathinfo($folder.$news['photo']);
-        if(is_file($folder.$pathInfoNews['filename'].'.'.$pathInfoNews['extension']) && is_file($folder.$file))
-            unlink($folder.$pathInfoNews['filename'].'.'.$pathInfoNews['extension']);
-        if(is_file($folder.$pathInfoNews['filename'].'_b.'.$pathInfoNews['extension']) && is_file($folder.$file))
-            unlink($folder.$pathInfoNews['filename'].'_b.'.$pathInfoNews['extension']);
-        if(is_file($folder.$pathInfoNews['filename'].'_m.'.$pathInfoNews['extension']) && is_file($folder.$file))
-            unlink($folder.$pathInfoNews['filename'].'_m.'.$pathInfoNews['extension']);
-        if(is_file($folder.$pathInfoNews['filename'].'_s.'.$pathInfoNews['extension']) && is_file($folder.$file))
-            unlink($folder.$pathInfoNews['filename'].'_s.'.$pathInfoNews['extension']);
-        $news['photo'] = $folder.$file;
+        $pathInfoPhotoInDB = pathinfo(self::$folder.$news['photo']);
+        if(is_file(self::$folder.$pathInfoPhotoInDB['filename'].'.'.$pathInfoPhotoInDB['extension']) && is_file(self::$folder.$fileInput))
+            unlink(self::$folder.$pathInfoPhotoInDB['filename'].'.'.$pathInfoPhotoInDB['extension']);
+        if(is_file(self::$folder.$pathInfoPhotoInDB['filename'].'_b.'.$pathInfoPhotoInDB['extension']) && is_file(self::$folder.$fileInput))
+            unlink(self::$folder.$pathInfoPhotoInDB['filename'].'_b.'.$pathInfoPhotoInDB['extension']);
+        if(is_file(self::$folder.$pathInfoPhotoInDB['filename'].'_m.'.$pathInfoPhotoInDB['extension']) && is_file(self::$folder.$fileInput))
+            unlink(self::$folder.$pathInfoPhotoInDB['filename'].'_m.'.$pathInfoPhotoInDB['extension']);
+        if(is_file(self::$folder.$pathInfoPhotoInDB['filename'].'_s.'.$pathInfoPhotoInDB['extension']) && is_file(self::$folder.$fileInput))
+            unlink(self::$folder.$pathInfoPhotoInDB['filename'].'_s.'.$pathInfoPhotoInDB['extension']);
+        $news['photo'] = $fileInput;
         $im_b = new Imagick();
-        $im_b->readImage($_SERVER['DOCUMENT_ROOT'].'/'.$folder.$file);
+        $im_b->readImage($_SERVER['DOCUMENT_ROOT'].'/'.self::$folder.$fileInput);
         $im_b->cropThumbnailImage(1280,1024, true);
-        $im_b->writeImage($_SERVER['DOCUMENT_ROOT'].'/'.$folder.'/'.$file_big);
+        $im_b->writeImage($_SERVER['DOCUMENT_ROOT'].'/'.self::$folder.'/'.$file_big);
         $im_m = new Imagick();
-        $im_m->readImage($_SERVER['DOCUMENT_ROOT'].'/'.$folder.$file);
+        $im_m->readImage($_SERVER['DOCUMENT_ROOT'].'/'.self::$folder.$fileInput);
         $im_m->cropThumbnailImage(300,200, true);
-        $im_m->writeImage($_SERVER['DOCUMENT_ROOT'].'/'.$folder.'/'.$file_middle);
+        $im_m->writeImage($_SERVER['DOCUMENT_ROOT'].'/'.self::$folder.'/'.$file_middle);
         $im_s = new Imagick();
-        $im_s->readImage($_SERVER['DOCUMENT_ROOT'].'/'.$folder.$file);
+        $im_s->readImage($_SERVER['DOCUMENT_ROOT'].'/'.self::$folder.$fileInput);
         $im_s->cropThumbnailImage(180,180, true);
-        $im_s->writeImage($_SERVER['DOCUMENT_ROOT'].'/'.$folder.'/'.$file_small );
+        $im_s->writeImage($_SERVER['DOCUMENT_ROOT'].'/'.self::$folder.'/'.$file_small );
         $this->updateNews($news, $id);
     }
     public function addNews($row)
@@ -103,12 +102,24 @@ class News extends \core\Model
         $news = $this->getNewsById($id);
         $userModel = new Users();
         $user = $userModel->getCurrentUser();
-        if($user === null)
-            return false;
-        if(empty($news) || empty($user) || $user['id'] != $news['user_id'])
-            return false;
+        if(!$userModel->isUserAccessIsAdmin() && !empty($news))
+            if(empty($user) || $user['id'] != $news['user_id'])
+                return false;
+        $this->deletePhotos($news['photo']);
         Core::getInstance()->getDB()->delete('news', ['id' => $id]);
         return true;
+    }
+    public function deletePhotos($namePhoto)
+    {
+        $pathInfoPhoto = pathinfo(self::$folder.$namePhoto);
+        if(is_file(self::$folder.$pathInfoPhoto['filename'].'.'.$pathInfoPhoto['extension']))
+            unlink(self::$folder.$pathInfoPhoto['filename'].'.'.$pathInfoPhoto['extension']);
+        if(is_file(self::$folder.$pathInfoPhoto['filename'].'_b.'.$pathInfoPhoto['extension']))
+            unlink(self::$folder.$pathInfoPhoto['filename'].'_b.'.$pathInfoPhoto['extension']);
+        if(is_file(self::$folder.$pathInfoPhoto['filename'].'_m.'.$pathInfoPhoto['extension']))
+            unlink(self::$folder.$pathInfoPhoto['filename'].'_m.'.$pathInfoPhoto['extension']);
+        if(is_file(self::$folder.$pathInfoPhoto['filename'].'_s.'.$pathInfoPhoto['extension']))
+            unlink(self::$folder.$pathInfoPhoto['filename'].'_s.'.$pathInfoPhoto['extension']);
     }
     public function Validate($row)
     {

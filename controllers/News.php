@@ -14,6 +14,7 @@ class News extends Controller
     protected $usersModel;
     protected $user;
     protected $newsModel;
+    protected static $folder = 'files/news/';
     public function __construct()
     {
         $this->usersModel = new \models\Users();
@@ -52,14 +53,13 @@ class News extends Controller
     public function actionAdd()
     {
         $titleForbidden = 'Доступ заборонено';
-        if(empty($this->user))
+        if(empty($this->user) || $this->usersModel->isUserAccessIsUser())
             return $this->render('forbidden', null, [
                 'PageTitle' => $titleForbidden,
                 'MainTitle' => $titleForbidden
             ]);
         $title = 'Додавання новини';
         if($this->isPost()){
-
             $result = $this->newsModel->addNews($_POST);
             if($result['error'] === false)
             {
@@ -78,7 +78,7 @@ class News extends Controller
                             $extension = 'png';
                     }
                     $name = $result['id'].'_'.uniqid().'.'.$extension;
-                    move_uploaded_file($_FILES['file']['tmp_name'], 'files/news/'.$name);
+                    move_uploaded_file($_FILES['file']['tmp_name'], self::$folder.$name);
                     $this->newsModel->ChangePhoto($result['id'], $name);
                 }
 
@@ -113,11 +113,13 @@ class News extends Controller
         $id = $_GET['id'];
         $news = $this->newsModel->getNewsById($id);
         $titleForbidden = 'Доступ заборонено';
-        if(empty($this->user) || $news['user_id'] != $this->usersModel->getCurrentUser()['id'])
-            return $this->render('forbidden', null, [
-                'PageTitle' => $titleForbidden,
-                'MainTitle' => $titleForbidden
-            ]);
+        if(!$this->usersModel->isUserAccessIsAdmin()){
+            if(empty($this->user) || $news['user_id'] != $this->user['id'] || $this->usersModel->isUserAccessIsUser())
+                return $this->render('forbidden', null, [
+                    'PageTitle' => $titleForbidden,
+                    'MainTitle' => $titleForbidden
+                ]);
+        }
         $title = 'Редагування новини';
         if($this->isPost()){
             $result = $this->newsModel->updateNews($_POST, $id);
@@ -135,7 +137,7 @@ class News extends Controller
                             $extension = 'png';
                     }
                     $name = $id . '_' . uniqid() . '.' . $extension;
-                    move_uploaded_file($_FILES['file']['tmp_name'], 'files/news/' . $name);
+                    move_uploaded_file($_FILES['file']['tmp_name'], self::$folder.$name);
                     $this->newsModel->ChangePhoto($id, $name);
                 }
                 return $this->renderMessage('success', 'Новину успішно збережено', null,
@@ -170,11 +172,13 @@ class News extends Controller
         $id = $_GET['id'];
         $news = $this->newsModel->getNewsById($id);
         $titleForbidden = 'Доступ заборонено';
-        if(empty($this->user) || $news['user_id'] != $this->usersModel->getCurrentUser()['id'])
-            return $this->render('forbidden', null, [
-                'PageTitle' => $titleForbidden,
-                'MainTitle' => $titleForbidden
-            ]);
+        if(!$this->usersModel->isUserAccessIsAdmin()){
+            if(empty($this->user) || $news['user_id'] != $this->user['id'] || $this->usersModel->isUserAccessIsUser())
+                return $this->render('forbidden', null, [
+                    'PageTitle' => $titleForbidden,
+                    'MainTitle' => $titleForbidden
+                ]);
+        }
         $title = 'Видалення новини';
         if(isset($_GET['confirm']) && $_GET['confirm'] == 'yes')
         {

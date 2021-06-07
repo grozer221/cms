@@ -22,7 +22,7 @@
         </div>
         <div>
             <a class="btn btn-primary" href="/news/view?id=<?= $news['id']?>">Читати далі</a>
-            <? if($news['user_id'] == $user['id']) : ?>
+            <? if($userModel->isUserAccessIsAdmin() || $news['user_id'] == $user['id']) : ?>
                 <a class="btn btn-success" href="/news/edit?id=<?= $news['id']?>">Редагувати</a>
                 <a class="btn btn-danger" href="/news/delete?id=<?= $news['id']?>">Видалити</a>
             <? endif; ?>

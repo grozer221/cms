@@ -29,17 +29,6 @@ class Users extends \core\Model
         else
             return true;
     }
-    public function isUserAuthenticated()
-    {
-        return isset($_SESSION['user']);
-    }
-    public function getCurrentUser()
-    {
-        if($this->isUserAuthenticated())
-            return $_SESSION['user'];
-        else
-            return null;
-    }
     public  function AddUser($userRow)
     {
         $validateResult = $this->Validate($userRow);
@@ -75,5 +64,37 @@ class Users extends \core\Model
             return $rows[0];
         else
             return null;
+    }
+    public function isUserAuthenticated()
+    {
+        return isset($_SESSION['user']);
+    }
+    public function getCurrentUser()
+    {
+        if($this->isUserAuthenticated())
+            return $_SESSION['user'];
+        else
+            return null;
+    }
+    public function isUserAccessIsAdmin()
+    {
+        if($_SESSION['user']['access'] === 'admin')
+            return true;
+        else
+            return false;
+    }
+    public function isUserAccessIsEditor()
+    {
+        if($_SESSION['user']['access'] === 'editor')
+            return true;
+        else
+            return false;
+    }
+    public function isUserAccessIsUser()
+    {
+        if($_SESSION['user']['access'] === 'user')
+            return true;
+        else
+            return false;
     }
 }
