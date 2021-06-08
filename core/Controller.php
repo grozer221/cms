@@ -67,4 +67,13 @@ class Controller
         $globalParams['PageContent'] = $tpl->render("views/layout/forbidden.php");
         return $globalParams;
     }
+    public function renderDelete($message, $localParams = null, $globalParams = null)
+    {
+        $tpl = new Template();
+        if(is_array($localParams))
+            $tpl->setParams($localParams);
+        $tpl->setParam('MessageText', $message);
+        $globalParams['PageContent'] = $tpl->render("views/layout/delete.php");
+        return $globalParams;
+    }
 }

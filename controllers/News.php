@@ -181,9 +181,11 @@ class News extends Controller
                         'MainTitle' => $title
                     ]);
         }
-        return $this->render('delete', ['model' => $news], [
-            'PageTitle' => $title,
-            'MainTitle' => $title
-        ]);
+        return $this->renderDelete('Ви дійсно бажаєте видалити новину',
+            [
+                'NameOfDeleted' => $news['title'],
+                'ModuleName' => 'news',
+                'model' => $news
+            ]);
     }
 }

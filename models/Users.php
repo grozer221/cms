@@ -144,4 +144,12 @@ class Users extends \core\Model
         else
             return true;
     }
+    public function deleteUser($id)
+    {
+        $user = $this->getUserById($id);
+        if(!$this->isUserAccessIsAdmin() && empty($user))
+            return false;
+        Core::getInstance()->getDB()->delete('users', ['id' => $id]);
+        return true;
+    }
 }

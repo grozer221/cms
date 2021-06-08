@@ -2,7 +2,8 @@
 $userModel = new \models\Users();
 $user = $userModel->getUserById($model['id']);
 ?>
-<form method="post" action="">
+<form method="post" action="" class="login-register-form bg-light">
+    <h1 class="text-center"><?= $PageTitle ?></h1>
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">E-mail</label>
         <input type="email" name="login" value="<?= $model['login'] ?>" class="form-control" id="exampleInputEmail1">
@@ -45,5 +46,5 @@ $user = $userModel->getUserById($model['id']);
             </select>
         </div>
     <? endif; ?>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="submit btn btn-primary text-center">Зберегти</button>
 </form>

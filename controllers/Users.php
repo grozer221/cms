@@ -36,7 +36,6 @@ class Users extends Controller
             }
             else{
                 return $this->render('login', null, [
-                    'PageTitle' => $title,
                     'MainTitle' => $title,
                     'MessageText' => 'Неправильний логін або пароль',
                     'MessageClass' => 'danger'
@@ -46,7 +45,6 @@ class Users extends Controller
         else
             return $this->render('login', null,
                 [
-                'PageTitle' => $title,
                 'MainTitle' => $title
             ]);
     }
@@ -70,8 +68,7 @@ class Users extends Controller
             else
             {
                 $message = implode('<br/>', $result);
-                return $this->render('register', null, [
-                        'PageTitle' => $title,
+                return $this->render('register', ['PageTitle' => 'Реєстрація на сайті'], [
                         'MainTitle' => $title,
                         'MessageText' => $message,
                         'MessageClass' => 'danger'
@@ -79,11 +76,7 @@ class Users extends Controller
             }
         }
         else{
-            return $this->render('register', null,
-                [
-                'PageTitle' => $title,
-                'MainTitle' => $title
-            ]);
+            return $this->render('register', ['PageTitle' => 'Реєстрація на сайті'], ['MainTitle' => $title]);
         }
     }
     public function actionIndex()
@@ -118,8 +111,12 @@ class Users extends Controller
             else
             {
                 $message = implode('<br/>', $result);
-                return $this->render('register', ['model' => $user], [
-                    'PageTitle' => $title,
+                return $this->render('register',
+                    [
+                        'model' => $user,
+                        'PageTitle' => $title
+                    ],
+                    [
                     'MainTitle' => $title,
                     'MessageText' => $message,
                     'MessageClass' => 'danger'
@@ -127,9 +124,40 @@ class Users extends Controller
             }
         }
         else
-            return $this->render('register', ['model' => $user], [
-                'PageTitle' => $title,
+            return $this->render('register',
+                [
+                    'model' => $user,
+                    'PageTitle' => $title
+                ], [
                 'MainTitle' => $title
+            ]);
+    }
+    public function actionDelete()
+    {
+        if(empty($_GET['id']))
+            return $this->renderForbidden();
+        $id = $_GET['id'];
+        $user = $this->usersModel->getUserById($id);
+        if(!$this->usersModel->isUserAccessIsAdmin() || !$this->usersModel->isUserAuthenticated())
+            return $this->renderForbidden();
+        $title = 'Видалення новини';
+        if(isset($_GET['confirm']) && $_GET['confirm'] == 'yes')
+        {
+            if($this->usersModel->deleteUser($id))
+                header('Location: /users/');
+            else
+                return $this->renderMessage('error', 'Помилка видалення користувача', null,
+                    [
+                        'PageTitle' => $title,
+                        'MainTitle' => $title
+                    ]);
+        }
+        var_dump($user);
+        return $this->renderDelete('Ви дійсно бажаєте видалити користувача',
+            [
+                'NameOfDeleted' => $user['firstname'].' '.$user['lastname'],
+                'ModuleName' => 'users',
+                'model' => $user
             ]);
     }
 }

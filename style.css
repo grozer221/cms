@@ -1,21 +1,47 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* ==============News===============*/
 .news-record{
     overflow: hidden;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 20px;
 }
 
-.news-record .photo svg, .news-record .photo img{
+.news-record .buttons{
+    text-align: right;
+}
+
+.news-record .wrapper-photo .photo{
     padding: 10px 10px 10px 0;
 }
 
-.news .bd-placeholder-img{
-    padding: 10px 10px 10px 0;
+.news-record .wrapper-photo .photo{
+    border-radius: 10%;
 }
 
+/* =============Users=============== */
 .user-record{
     display: flex;
     justify-content: space-between;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    align-items: center;
 }
 
-/* Press down Footer to bottom*/
+.login-register-form{
+    width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 20px;
+    box-sizing: content-box;
+}
+
+/* ======Press down Footer to bottom=== */
 html,
 body {
     height: 100%;
@@ -31,4 +57,16 @@ body {
 footer {
     flex: 0 0 auto;
 }
-/* --------------------------------*/
+/* ==================================== */
+
+.submit{
+    display: block;
+    margin: 0 auto;
+    width: 150px;
+}
+
+@media (max-width:992px){
+    .login-register-form{
+        width: 400px;
+    }
+}

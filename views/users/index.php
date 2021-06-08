@@ -1,10 +1,11 @@
 <?php $userModel = new \models\Users() ?>
 <? if($userModel->isUserAccessIsAdmin()) : ?>
-    <a class="mb-4 btn btn-success" href="/users/register">Створити користувача</a>
+    <a class="mt-2 mb-4 btn btn-success" href="/users/register">Створити користувача</a>
     <?php foreach ($lastUsers as $user) : ?>
         <div class="user-record mb-4">
             <div>
                 <h5><?= $user['firstname'].' '.$user['lastname'] ?></h5>
+                <div>Id: <?= $user['id'] ?></div>
                 <div>Email: <?= $user['login'] ?></div>
                 <div>Права доступу: <?= $user['access'] ?></div>
             </div>

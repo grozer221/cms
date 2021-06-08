@@ -9,21 +9,17 @@
     <?php $pathinfo = pathinfo($news['photo']); ?>
     <div class="news-record mb-4">
         <h3><?= $news['title'] ?></h3>
-        <div class="photo">
+        <div class="wrapper-photo">
             <? if(is_file('files/news/'.$pathinfo['filename'].'_s.'.$pathinfo['extension'])) : ?>
-                <div>
-                    <img src="/files/news/<?= $pathinfo['filename'].'_s.'.$pathinfo['extension'] ?>" class="bd-placeholder-img rounded float-start">
-                </div>
+                <img src="/files/news/<?= $pathinfo['filename'].'_s.'.$pathinfo['extension'] ?>" class="float-start photo">
             <? else: ?>
-                <div>
-                    <svg class="bd-placeholder-img rounded float-start" width="200" height="200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 200x200" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em"></text></svg>
-                </div>
+                <img src="/files/news/empty.png" class="float-start photo">
             <? endif ?>
         </div>
         <div>
             <?= $news['short_text'] ?>
         </div>
-        <div>
+        <div class="buttons">
             <a class="btn btn-primary" href="/news/view?id=<?= $news['id']?>">Читати далі</a>
             <? if($userModel->isUserAccessIsAdmin() || $news['user_id'] == $user['id']) : ?>
                 <a class="btn btn-success" href="/news/edit?id=<?= $news['id']?>">Редагувати</a>
