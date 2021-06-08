@@ -50,11 +50,8 @@ class Users extends Controller
     }
     public function actionRegister()
     {
-        if(!$this->usersModel->isUserAccessIsAdmin())
-            if(isset($_SESSION['user'])){
-                header('Location: /');
-                return;
-            }
+        if($this->usersModel->isUserAuthenticated() && !$this->usersModel->isUserAccessIsAdmin())
+            header('Location: /');
         $title = 'Реєстрація на сайті';
         if($this->isPost())
         {
@@ -94,20 +91,14 @@ class Users extends Controller
     public function actionEdit()
     {
         $title = 'Редагування користувача';
-        if(empty($_GET['id']) || !$this->usersModel->isUserAccessIsAdmin())
+        if(empty($_GET['id']) || $this->usersModel->isUserAuthenticated() && !$this->usersModel->isUserAccessIsAdmin())
             return $this->renderForbidden();
         $id = $_GET['id'];
         $user = $this->usersModel->getUserById($id);
         if($this->isPost()) {
             $result = $this->usersModel->updateUser($_POST, $id);
             if ($result === true)
-            {
-                return $this->renderMessage('success', 'Користувача успішно відредаговано', null,
-                    [
-                        'PageTitle' => $title,
-                        'MainTitle' => $title
-                    ]);
-            }
+                header('Location: /users');
             else
             {
                 $message = implode('<br/>', $result);
@@ -128,9 +119,8 @@ class Users extends Controller
                 [
                     'model' => $user,
                     'PageTitle' => $title
-                ], [
-                'MainTitle' => $title
-            ]);
+                ],
+                ['MainTitle' => $title]);
     }
     public function actionDelete()
     {
@@ -152,7 +142,6 @@ class Users extends Controller
                         'MainTitle' => $title
                     ]);
         }
-        var_dump($user);
         return $this->renderDelete('Ви дійсно бажаєте видалити користувача',
             [
                 'NameOfDeleted' => $user['firstname'].' '.$user['lastname'],

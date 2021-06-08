@@ -1,6 +1,7 @@
 <?php
 $userModel = new \models\Users();
-$user = $userModel->getCurrentUser()
+$user = $userModel->getCurrentUser();
+$year = date('Y');
 ?>
 <!doctype html>
 <html lang="ua">
@@ -23,7 +24,15 @@ $user = $userModel->getCurrentUser()
                         <li class="nav-item">
                             <a class="nav-link" href="/news">Новини</a>
                         </li>
-                        <? if($userModel->isUserAuthenticated() && !$userModel->isUserAccessIsUser()) :?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/journals">Журнали</a>
+                        </li>
+                        <? if($userModel->isUserAuthenticated()) :?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chat">Чат</a>
+                            </li>
+                        <? endif; ?>
+                        <? if($userModel->isUserAuthenticated() && $userModel->isUserAccessIsAdmin()) :?>
                             <li class="nav-item">
                                 <a class="nav-link" href="/users">Користувачі</a>
                             </li>
@@ -49,7 +58,7 @@ $user = $userModel->getCurrentUser()
             </div>
         </nav>
         <div class="container">
-            <h1 class="mt-5"><?= $PageTitle ?></h1>
+            <h1 class="mt-3"><?= $PageTitle ?></h1>
             <? if(!empty($MessageText)) : ?>
                 <div class="alert alert-<?= $MessageClass?>" role="alert">
                     <?= $MessageText?>
@@ -59,7 +68,7 @@ $user = $userModel->getCurrentUser()
         </div>
     </div>
     <footer class="bg-light mt-4">
-        <div class="container p-3">© 2020 Copyright: Grozer</div>
+        <div class="container p-3">© <?= $year ?> Copyright: Grozer</div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <? if($userModel->isUserAuthenticated() && !($user['access'] === 'user')) : ?>

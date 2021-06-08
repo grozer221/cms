@@ -3,7 +3,9 @@
     $user = $userModel->getCurrentUser();
 ?>
 <? if($userModel->isUserAuthenticated() && !$userModel->isUserAccessIsUser()) : ?>
-    <a  class="mb-4 mt-2 btn btn-success" href="/news/add">Створити новину</a>
+    <div class="mb-4 mt-2 align-right">
+        <a  class="btn btn-success" href="/news/add">Створити новину</a>
+    </div>
 <? endif;?>
 <?php foreach ($lastNews as $news) : ?>
     <?php $pathinfo = pathinfo($news['photo']); ?>

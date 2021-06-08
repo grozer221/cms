@@ -1,8 +1,6 @@
 <?php
 
-
 namespace core;
-
 
 class Utils
 {
@@ -10,7 +8,7 @@ class Utils
     {
         $newRow = [];
         foreach ($fields as $field)
-            if(isset($row[$field]))
+            if (isset($row[$field]))
                 $newRow[$field] = $row[$field];
         return $newRow;
     }

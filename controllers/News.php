@@ -41,6 +41,8 @@ class News extends Controller
     {
         $id = $_GET['id'];
         $news = $this->newsModel->getNewsById($id);
+        if(empty($news) || empty($id))
+            header('Location: /notfound/');
         $title = $news['title'];
         return $this->render('view', ['model' => $news], [
             'PageTitle' => $title,
@@ -77,12 +79,7 @@ class News extends Controller
                     move_uploaded_file($_FILES['file']['tmp_name'], self::$folder.$name);
                     $this->newsModel->ChangePhoto($result['id'], $name);
                 }
-
-                return $this->renderMessage('success', 'Новина успішно додана', null,
-                    [
-                        'PageTitle' => $title,
-                        'MainTitle' => $title
-                    ]);
+                header('Location: /news');
             }
             else
             {
@@ -107,7 +104,7 @@ class News extends Controller
     public function actionEdit()
     {
         if(empty($_GET['id']))
-            return $this->renderForbidden();
+            header('Location: /notfound/');
         $id = $_GET['id'];
         $news = $this->newsModel->getNewsById($id);
         if(!$this->usersModel->isUserAccessIsAdmin())
@@ -133,11 +130,7 @@ class News extends Controller
                     move_uploaded_file($_FILES['file']['tmp_name'], self::$folder.$name);
                     $this->newsModel->ChangePhoto($id, $name);
                 }
-                return $this->renderMessage('success', 'Новину успішно збережено', null,
-                    [
-                        'PageTitle' => $title,
-                        'MainTitle' => $title
-                    ]);
+                header('Location: /news');
             }
 
             else
@@ -163,7 +156,7 @@ class News extends Controller
     public function actionDelete()
     {
         if(empty($_GET['id']))
-            return $this->renderForbidden();
+            header('Location: /notfound/');
         $id = $_GET['id'];
         $news = $this->newsModel->getNewsById($id);
         if(!$this->usersModel->isUserAccessIsAdmin())
@@ -172,7 +165,7 @@ class News extends Controller
         $title = 'Видалення новини';
         if(isset($_GET['confirm']) && $_GET['confirm'] == 'yes')
         {
-            if($this->newsModel->deleteNews($id))
+            if($this->newsModel->deleteNews($id) === true)
                 header('Location: /news/');
             else
                 return $this->renderMessage('error', 'Помилка видалення новини', null,

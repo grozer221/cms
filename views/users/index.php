@@ -1,6 +1,8 @@
 <?php $userModel = new \models\Users() ?>
 <? if($userModel->isUserAccessIsAdmin()) : ?>
-    <a class="mt-2 mb-4 btn btn-success" href="/users/register">Створити користувача</a>
+    <div class="align-right mt-2 mb-4">
+        <a class=" btn btn-success" href="/users/register">Створити користувача</a>
+    </div>
     <?php foreach ($lastUsers as $user) : ?>
         <div class="user-record mb-4">
             <div>

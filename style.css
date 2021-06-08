@@ -3,6 +3,11 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+a{
+    color: black;
+}
+
 /* ==============News===============*/
 .news-record{
     overflow: hidden;
@@ -65,8 +70,81 @@ footer {
     width: 150px;
 }
 
+/* ===============Chat================= */
+.wrapper-chat{
+    height: 500px;
+    border: 1px solid black;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper-chat .chat{
+    flex: 1 0 auto;
+}
+
+.wrapper-chat .panel-bottom{
+    display: flex;
+    padding: 20px;
+    flex: 0 0 auto;
+}
+/* ==================================== */
+
+.align-right{
+    text-align: right;
+    padding-right: 22px;
+}
+
+
+/* ============Journals================== */
+.wrapper-journals-list .primary-school,
+.wrapper-journals-list .middle-school,
+.wrapper-journals-list .high-school{
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+
+.wrapper-journals-list .wrapper-classes{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wrapper-journals-list .wrapper-class{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    align-self: center;
+}
+
+.wrapper-journals-list .wrapper-subject{
+    display: flex;
+    margin: 5px;
+}
+
+.wrapper-journals-list .btn-primary{
+    margin-right: 5px;
+}
+
+
+
+
+.marks table,
+.marks tr,
+.marks td,
+.marks th{
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+
 @media (max-width:992px){
     .login-register-form{
         width: 400px;
     }
 }
+
