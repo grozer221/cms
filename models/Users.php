@@ -38,7 +38,10 @@ class Users extends \core\Model
             $fields = ['login', 'password', 'firstname', 'lastname'];
         $userRowFiltered = Utils::arrayFilter($userRow, $fields);
         $userRowFiltered['password'] = md5($userRowFiltered['password']);
+        if(!$this->isUserAuthenticated())
+            $userRowFiltered['access'] = 'user';
         $userRowFiltered['date_register'] = date('Y-m-d H:i:s');;
+        $userRowFiltered['date_edit_user'] = date('Y-m-d H:i:s');
         \core\Core::getInstance()->getDB()->insert('users', $userRowFiltered);
         return true;
     }
